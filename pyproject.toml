@@ -1,0 +1,24 @@
+[project]
+name = "htmltomd"
+version = "0.1.1"
+license = "MIT"
+authors = [
+  { name="Tap to restart", email="taptorestart@example.com" },
+]
+description = "HTML to Markdown"
+readme = "README.md"
+requires-python = ">=3.6"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+keywords = ["html", "markdown", "md"]
+
+[project.urls]
+"Homepage" = "https://github.com/taptorestart/htmltomd"
+"Bug Tracker" = "https://github.com/taptorestart/htmltomd/issues"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
