@@ -16,3 +16,7 @@ classifiers = [
 [project.urls]
 "Homepage" = "https://github.com/taptorestart/htmltomd"
 "Bug Tracker" = "https://github.com/taptorestart/htmltomd/issues"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
