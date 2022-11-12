@@ -1,6 +1,7 @@
 [project]
 name = "htmltomd"
-version = "0.1.0"
+version = "0.1.1"
+license = "MIT"
 authors = [
   { name="Tap to restart", email="taptorestart@example.com" },
 ]
@@ -12,6 +13,7 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
+keywords = ["html", "markdown", "md"]
 
 [project.urls]
 "Homepage" = "https://github.com/taptorestart/htmltomd"
