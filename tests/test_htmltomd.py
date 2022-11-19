@@ -1,6 +1,6 @@
 from htmltomd import element_to_md, h1_to_md, h2_to_md, h3_to_md, h4_to_md, h5_to_md, h6_to_md, b_to_md, \
     i_to_md, a_to_md, p_to_md, get_body, html_to_md, remove_comments, strong_to_md, newlines_to_newline, \
-    remove_newlines, figure_to_md
+    remove_newlines, figure_to_md, get_title
 
 
 def test_element_to_md():
@@ -109,6 +109,16 @@ def test_figure_to_md():
 def test_p_to_md():
     result = p_to_md("<div><p class=\"article\">Paragraph</p> <p class=\"article\">Paragraph</p></div>")
     assert result == "<div>\nParagraph\n \nParagraph\n</div>"
+
+
+def test_get_title():
+    html = """
+<head>
+    <title>Title</title>
+</head>    
+"""
+    result = get_title(html)
+    assert result == "Title"
 
 
 def test_get_body():

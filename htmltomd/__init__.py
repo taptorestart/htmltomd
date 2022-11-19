@@ -152,6 +152,13 @@ def p_to_md(html: str) -> str:
     return html
 
 
+def get_title(html: str) -> str:
+    pattern_search = f"(?s)(?<=<title>)(.*?)(?=</title>)"
+    result = re.search(pattern_search, html)
+    title = result.group(0) if result is not None else ""
+    return title
+
+
 def get_body(html: str) -> str:
     pattern_search = f"(?s)(?<=<body>)(.*?)(?=</body>)"
     result = re.search(pattern_search, html)
@@ -206,6 +213,7 @@ def remove_tag(tag: str, html: str) -> str:
     result = re.sub(f"</{tag}>", "", result)
     return result
 
+
 def html_to_md(html: str) -> str:
     html = get_body(html)
     html = remove_newlines(html)
@@ -214,10 +222,6 @@ def html_to_md(html: str) -> str:
     html = remove_styles(html)
     html = remove_links(html)
     html = remove_comments(html)
-    html = remove_tag("iframe", html)
-    html = remove_tag("footer", html)
-    html = remove_tag("ins", html)
-    html = remove_tag("span", html)
     html = b_to_md(html)
     html = strong_to_md(html)
     html = i_to_md(html)
