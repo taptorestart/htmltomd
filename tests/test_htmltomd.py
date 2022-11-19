@@ -153,7 +153,7 @@ This is paragraph.
 </html>        
 """
     result = html_to_md(html)
-    assert result == "<div>\nThis is paragraph.\n</div>"
+    assert result == "\nThis is paragraph.\n"
     html = """
 <div>
 <h1>Title 1</h1>
@@ -170,5 +170,5 @@ This is third paragraph.
 </p>
 """
     result = html_to_md(html)
-    assert result == "<div>\n# Title 1\nThis is first paragraph.\n## Subtitle 1\nThis is second paragraph." \
+    assert result == "\n# Title 1\nThis is first paragraph.\n## Subtitle 1\nThis is second paragraph." \
                      "\n## Subtitle 2\nThis is third paragraph.\n"
