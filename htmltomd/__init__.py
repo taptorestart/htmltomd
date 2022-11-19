@@ -32,6 +32,13 @@ HTML_ELEMENTS_OBSOLETE_DEPRECATED_ELEMENTS = [
     "keygen", "marquee", "menuitem", "nobr", "noembed", "noframes", "param", "plaintext", "rb", "rtc", "shadow",
     "spacer", "strike", "tt", "xmp"
 ]
+HTML_ELEMENTS_ALL = HTML_ELEMENTS_MAIN_ROOT + HTML_ELEMENTS_DOCUMENT_META + HTML_ELEMENTS_SECTIONING_ROOT + \
+                    HTML_ELEMENTS_CONTENT_SECTIONING + HTML_ELEMENTS_TEXT_CONTENT + \
+                    HTML_ELEMENTS_INLINE_TEXT_SEMANTICS + HTML_ELEMENTS_IMAGE_MULTIMEDIA + \
+                    HTML_ELEMENTS_EMBEDDED_CONTENT + HTML_ELEMENTS_SVG_MATHML + \
+                    HTML_ELEMENTS_SCRIPTING + HTML_ELEMENTS_DEMARCATING_EDITS + HTML_ELEMENTS_TABLE_CONTENT + \
+                    HTML_ELEMENTS_FORMS + HTML_ELEMENTS_INTERACTIVE_ELEMENTS + HTML_ELEMENTS_WEB_COMPONENTS + \
+                    HTML_ELEMENTS_OBSOLETE_DEPRECATED_ELEMENTS
 
 
 def element_to_md(element: str, html: str, prefix: str = "", suffix: str = "") -> str:
@@ -111,6 +118,35 @@ def a_to_md(html: str) -> str:
     return html
 
 
+def figure_to_md(html: str) -> str:
+    result = re.search("(?s)(?<=<figure>)(.*?)(?=</figure>)", html)
+    if result is not None:
+        pre_result = re.sub(f"<figure>", "", html[0:result.start()], count=1)
+        post_result = re.sub(f"</figure>", "", html[result.end():], count=1)
+        src = re.search("(?s)(?<=<img src=\")(.*?)(?=\")", result.group(0))
+        alt = re.search("(?s)(?<=alt=\")(.*?)(?=\")", result.group(0))
+        figcaption = re.search("(?s)(?<=<figcaption>)(.*?)(?=</figcaption>)", result.group(0))
+        caption = figcaption.group(0) if figcaption is not None else alt.group(0) if alt is not None else ""
+        source = src.group(0) if src is not None else ""
+        figure_content = f"\n![{caption}]({source})\n"
+        html = f"{pre_result}{figure_content}{post_result}"
+        html = figure_to_md(html)
+
+    result = re.search("(?s)(?<=<figure\s)(.*?)(?=>)(.*?)(?=</figure>)", html)
+    if result is not None:
+        pre_result = re.sub("<figure\s", "", html[0:result.start()], count=1)
+        post_result = re.sub("</figure>", "", html[result.end():], count=1)
+        src = re.search("(?s)(?<=<img src=\")(.*?)(?=\")", result.group(0))
+        alt = re.search("(?s)(?<=alt=\")(.*?)(?=\")", result.group(0))
+        figcaption = re.search("(?s)(?<=<figcaption>)(.*?)(?=</figcaption>)", result.group(0))
+        caption = figcaption.group(0) if figcaption is not None else alt.group(0) if alt is not None else ""
+        source = src.group(0) if src is not None else ""
+        figure_content = f"\n![{caption}]({source})\n"
+        html = f"{pre_result}{figure_content}{post_result}"
+        html = figure_to_md(html)
+    return html
+
+
 def p_to_md(html: str) -> str:
     html = element_to_md('p', html, '\n', '\n')
     return html
@@ -178,7 +214,6 @@ def html_to_md(html: str) -> str:
     html = remove_styles(html)
     html = remove_links(html)
     html = remove_comments(html)
-    html = remove_tag("div", html)
     html = remove_tag("iframe", html)
     html = remove_tag("footer", html)
     html = remove_tag("ins", html)
@@ -187,6 +222,7 @@ def html_to_md(html: str) -> str:
     html = strong_to_md(html)
     html = i_to_md(html)
     html = a_to_md(html)
+    html = figure_to_md(html)
     html = h1_to_md(html)
     html = h2_to_md(html)
     html = h3_to_md(html)
@@ -194,5 +230,7 @@ def html_to_md(html: str) -> str:
     html = h5_to_md(html)
     html = h6_to_md(html)
     html = p_to_md(html)
+    for tag in HTML_ELEMENTS_ALL:
+        html = remove_tag(tag, html)
     html = newlines_to_newline(html)
     return html

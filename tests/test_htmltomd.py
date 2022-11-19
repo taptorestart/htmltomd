@@ -1,5 +1,6 @@
 from htmltomd import element_to_md, h1_to_md, h2_to_md, h3_to_md, h4_to_md, h5_to_md, h6_to_md, b_to_md, \
-    i_to_md, a_to_md, p_to_md, get_body, html_to_md, remove_comments, strong_to_md, newlines_to_newline, remove_newlines
+    i_to_md, a_to_md, p_to_md, get_body, html_to_md, remove_comments, strong_to_md, newlines_to_newline, \
+    remove_newlines, figure_to_md
 
 
 def test_element_to_md():
@@ -87,6 +88,22 @@ def test_a_to_md():
         "<div><A HREF=\"https://taptorestart.com\" target=\"_black\">taptorestart.com</A></div>"
     )
     assert result == "<div>[taptorestart.com](https://taptorestart.com)</div>"
+
+
+def test_figure_to_md():
+    html = "<div><figure class=\"image\"><img src=\"https://taptorestart.com/cat.png\"><figcaption>Cat</figcaption></figure></div>"
+    result = figure_to_md(html)
+    assert result == "<div>\n![Cat](https://taptorestart.com/cat.png)\n</div>"
+    html = """
+<div><figure class=\"image\"><img src=\"https://taptorestart.com/cat.png\"><figcaption>Cat</figcaption></figure></div>
+<div><figure class=\"image\"><img src=\"https://taptorestart.com/dog.png\"><figcaption>Dog</figcaption></figure></div>
+"""
+    result = figure_to_md(html)
+    assert result == "\n<div>\n![Cat](https://taptorestart.com/cat.png)\n</div>\n" \
+                     "<div>\n![Dog](https://taptorestart.com/dog.png)\n</div>\n"
+    html = "<figure><figcaption>Cat</figcaption></figure><figure><figcaption>Dog</figcaption></figure>"
+    result = figure_to_md(html)
+    assert result == "\n![Cat]()\n\n![Dog]()\n"
 
 
 def test_p_to_md():
