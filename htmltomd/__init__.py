@@ -152,6 +152,12 @@ def p_to_md(html: str) -> str:
     return html
 
 
+def br_to_linebreak(html: str) -> str:
+    html = html.replace("<br>", "\n")
+    html = html.replace("</br>", "\n")
+    return html
+
+
 def get_title(html: str) -> str:
     pattern_search = f"(?s)(?<=<title>)(.*?)(?=</title>)"
     result = re.search(pattern_search, html)
@@ -204,7 +210,7 @@ def remove_newlines(html: str) -> str:
 
 
 def newlines_to_newline(html: str) -> str:
-    result = re.sub(r"\n+", "\n", html)
+    result = re.sub(r"\n{3,}", "\n\n", html)
     return result
 
 
@@ -222,6 +228,7 @@ def html_to_md(html: str) -> str:
     html = remove_styles(html)
     html = remove_links(html)
     html = remove_comments(html)
+    html = br_to_linebreak(html)
     html = b_to_md(html)
     html = strong_to_md(html)
     html = i_to_md(html)
