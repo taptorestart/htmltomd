@@ -1,7 +1,7 @@
 import re
 
 
-def element_to_md(element: str, html: str, prefix: str, suffix: str) -> str:
+def element_to_md(element: str, html: str, prefix: str = "", suffix: str = "") -> str:
     pattern_search = f"(?s)(?<=<{element}>)(.+?)(?=</{element}>)"
     result = re.search(pattern_search, html)
     if result is not None:
@@ -22,37 +22,42 @@ def element_to_md(element: str, html: str, prefix: str, suffix: str) -> str:
 
 
 def h1_to_md(html: str) -> str:
-    html = element_to_md('h1', html, '# ', '\n')
+    html = element_to_md('h1', html, '\n# ', '\n')
     return html
 
 
 def h2_to_md(html: str) -> str:
-    html = element_to_md('h2', html, '## ', '\n')
+    html = element_to_md('h2', html, '\n## ', '\n')
     return html
 
 
 def h3_to_md(html: str) -> str:
-    html = element_to_md('h3', html, '### ', '\n')
+    html = element_to_md('h3', html, '\n### ', '\n')
     return html
 
 
 def h4_to_md(html: str) -> str:
-    html = element_to_md('h4', html, '#### ', '\n')
+    html = element_to_md('h4', html, '\n#### ', '\n')
     return html
 
 
 def h5_to_md(html: str) -> str:
-    html = element_to_md('h5', html, '##### ', '\n')
+    html = element_to_md('h5', html, '\n##### ', '\n')
     return html
 
 
 def h6_to_md(html: str) -> str:
-    html = element_to_md('h6', html, '###### ', '\n')
+    html = element_to_md('h6', html, '\n###### ', '\n')
     return html
 
 
 def b_to_md(html: str) -> str:
     html = element_to_md('b', html, '**', '**')
+    return html
+
+
+def strong_to_md(html: str) -> str:
+    html = element_to_md('strong', html, '**', '**')
     return html
 
 
@@ -78,18 +83,53 @@ def p_to_md(html: str) -> str:
     return html
 
 
-def _get_body(html: str) -> str:
-    html = html.replace("\n", "")
-    result = re.search("(?s)(?<=<body>)(.+?)(?=</body>)", html)
-    if result is None:
-        return html
-    return f"{result.group(0)}"
+def get_body(html: str) -> str:
+    pattern_search = f"(?s)(?<=<body>)(.+?)(?=</body>)"
+    result = re.search(pattern_search, html)
+    if result is not None:
+        html = result.group(0)
+
+    pattern_search = f"(?s)(?<=<body\s)(.+?)(?=>)(.+?)(?=</body>)"
+    result = re.search(pattern_search, html)
+    if result is not None:
+        content = re.search(f"(?s)(?<=>)(.+?)(?=</body>)", html[result.start():])
+        html = content.group(0)
+    return html
+
+
+def remove_scripts(html: str) -> str:
+    result = re.sub("<script.*?>\n*?.*?\n*?</script>", "", html)
+    return result
+
+
+def remove_comments(html: str) -> str:
+    result = re.sub("<!--\n*?.*?\n*?-->", "", html)
+    return result
+
+
+def remove_tabs(html: str) -> str:
+    result = re.sub(r"\s+", " ", html)
+    return result
+
+
+def remove_newlines(html: str) -> str:
+    result = re.sub(r"\n+", "", html)
+    return result
+
+
+def newlines_to_newline(html: str) -> str:
+    result = re.sub(r"\n+", "\n", html)
+    return result
 
 
 def html_to_md(html: str) -> str:
-    html = html.replace("\n", "")
-    html = _get_body(html)
+    html = remove_newlines(html)
+    html = remove_tabs(html)
+    html = remove_scripts(html)
+    html = remove_comments(html)
+    html = get_body(html)
     html = b_to_md(html)
+    html = strong_to_md(html)
     html = i_to_md(html)
     html = a_to_md(html)
     html = h1_to_md(html)
@@ -99,5 +139,5 @@ def html_to_md(html: str) -> str:
     html = h5_to_md(html)
     html = h6_to_md(html)
     html = p_to_md(html)
-    html = html.replace("\n\n", "\n")
+    html = newlines_to_newline(html)
     return html
