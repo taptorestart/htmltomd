@@ -1,6 +1,39 @@
 import re
 
 
+# Source: https://developer.mozilla.org/en-US/docs/Web/HTML/Element
+HTML_ELEMENTS_MAIN_ROOT = ["html"]
+HTML_ELEMENTS_DOCUMENT_META = ["base", "head", "link", "meta", "style", "title"]
+HTML_ELEMENTS_SECTIONING_ROOT = ["body"]
+HTML_ELEMENTS_CONTENT_SECTIONING = [
+    "address", "article", "aside", "footer", "header", "h1", "h2", "h3", "h4", "h5", "h6", "main", "nav", "section"
+]
+HTML_ELEMENTS_TEXT_CONTENT = [
+    "blockquote", "dd", "div", "dl", "dt", "figcaption", "figure", "hr", "li", "menu", "ol", "p", "pre", "ul"
+]
+HTML_ELEMENTS_INLINE_TEXT_SEMANTICS = [
+    "a", "abbr", "b", "bdi", "bdo", "br", "cite", "code", "data", "dfn", "em", "i", "kbd", "mark", "q", "rp", "rt",
+    "ruby", "s", "samp", "small", "span", "strong", "sub", "sup", "time", "u", "var", "wbr"
+]
+HTML_ELEMENTS_IMAGE_MULTIMEDIA = ["area", "audio", "img", "map", "track", "video"]
+HTML_ELEMENTS_EMBEDDED_CONTENT = ["embed", "iframe", "object", "picture", "portal", "source"]
+HTML_ELEMENTS_SVG_MATHML = ["svg", "math"]
+HTML_ELEMENTS_SCRIPTING = ["canvas", "noscript", "script"]
+HTML_ELEMENTS_DEMARCATING_EDITS = ["del", "ins"]
+HTML_ELEMENTS_TABLE_CONTENT = ["caption", "col", "colgroup", "table", "tbody", "td", "tfoot", "th", "thead", "tr"]
+HTML_ELEMENTS_FORMS = [
+    "button", "datalist", "fieldset", "form", "input", "label", "legend", "meter", "optgroup", "option", "output",
+    "progress", "select", "textarea"
+]
+HTML_ELEMENTS_INTERACTIVE_ELEMENTS = ["detail", "dialog", "summary"]
+HTML_ELEMENTS_WEB_COMPONENTS = ["slot", "template"]
+HTML_ELEMENTS_OBSOLETE_DEPRECATED_ELEMENTS = [
+    "acronym", "applet", "bgsound", "big", "blink", "center", "content", "dir", "font", "frame", "frameset", "image",
+    "keygen", "marquee", "menuitem", "nobr", "noembed", "noframes", "param", "plaintext", "rb", "rtc", "shadow",
+    "spacer", "strike", "tt", "xmp"
+]
+
+
 def element_to_md(element: str, html: str, prefix: str = "", suffix: str = "") -> str:
     pattern_search = f"(?s)(?<=<{element}>)(.*?)(?=</{element}>)"
     result = re.search(pattern_search, html)
@@ -136,7 +169,6 @@ def remove_tag(tag: str, html: str) -> str:
     result = re.sub(f"<{tag}\n*?.*?\n*?>", "", html)
     result = re.sub(f"</{tag}>", "", result)
     return result
-
 
 def html_to_md(html: str) -> str:
     html = get_body(html)
