@@ -1,6 +1,6 @@
 # htmltomd
 
-htmltomd is a simple package for converting HTML to Markdown.
+htmltomd is a simple package for converting HTML to [Markdown](https://daringfireball.net/projects/markdown/).
 
 ## Getting Started
 ```shell
