@@ -159,7 +159,7 @@ def test_remove_newlines():
 def test_newlines_to_newline():
     html = "\n\n\n\n<div></div>\n\n\n\n"
     result = newlines_to_newline(html)
-    assert result == "\n<div></div>\n"
+    assert result == "\n\n<div></div>\n\n"
 
 
 def test_html_to_md():
@@ -197,5 +197,5 @@ This is third paragraph.
 </p>
 """
     result = html_to_md(html)
-    assert result == "\n# Title 1\nThis is first paragraph.\n## Subtitle 1\nThis is second paragraph." \
-                     "\n## Subtitle 2\nThis is third paragraph.\n"
+    assert result == "\n# Title 1\n\nThis is first paragraph.\n\n## Subtitle 1\n\nThis is second paragraph." \
+                     "\n\n## Subtitle 2\n\nThis is third paragraph.\n"
